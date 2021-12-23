@@ -1,0 +1,22 @@
+{
+  "name": "puppeteer-lambda",
+  "version": "1.0.0",
+  "description": "Launch a puppeteer from AWS Lambda",
+  "main": "main.js",
+  "scripts": {
+    "s3:clean": "aws s3 rm s3://dabos-bucket/ --recursive --exclude \"*\" --include \"*.png\"",
+    "docker:build": "docker build . -t puppeteer-lambda:1.0.0",
+    "docker:login": "aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin 586044862035.dkr.ecr.eu-west-3.amazonaws.com",
+    "docker:tag": "docker tag puppeteer-lambda:1.0.0 586044862035.dkr.ecr.eu-west-3.amazonaws.com/dabos-lambda-ecr:1.0.0",
+    "docker:push": "docker push 586044862035.dkr.ecr.eu-west-3.amazonaws.com/dabos-lambda-ecr:1.0.0",
+    "docker:all": "npm run docker:build && npm run docker:tag && npm run docker:push",
+    "docker:test": "docker run -i -m 512m --rm --name lambda --env-file .env --entrypoint node puppeteer-lambda:1.0.0 -- ."
+  },
+  "keywords": [],
+  "author": "Damien ABOS (Inetum) <damien.abos@inetum.com>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1046.0",
+    "puppeteer": "^13.0.0"
+  }
+}
